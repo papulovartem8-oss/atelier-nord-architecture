@@ -129,7 +129,30 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: .08, rootMargin: '0px 0px -4% 0px' });
 
-document.querySelectorAll('.reveal,.reveal-image,.reveal-project').forEach((element) => observer.observe(element));
+const revealElements = [...document.querySelectorAll('.reveal,.reveal-image,.reveal-project')];
+revealElements.forEach((element) => observer.observe(element));
+
+// A small geometry fallback keeps reveals reliable after intro-lock and hash jumps.
+// It only touches opacity/transform classes, so it stays cheap on long pages.
+let revealFrame = 0;
+const revealOnViewport = () => {
+  const limit = window.innerHeight * 1.08;
+  revealElements.forEach((element) => {
+    if (element.classList.contains('is-visible')) return;
+    const rect = element.getBoundingClientRect();
+    if (rect.top < limit && rect.bottom > -40) element.classList.add('is-visible');
+  });
+};
+const requestRevealCheck = () => {
+  if (revealFrame) return;
+  revealFrame = window.requestAnimationFrame(() => {
+    revealOnViewport();
+    revealFrame = 0;
+  });
+};
+window.addEventListener('scroll', requestRevealCheck, { passive: true });
+window.addEventListener('resize', requestRevealCheck);
+window.setTimeout(revealOnViewport, 120);
 
 if (!reducedMotion) {
   const counterObserver = new IntersectionObserver((entries) => {

@@ -190,9 +190,11 @@ body.site-ready .hero-caption { opacity: .85; }
 .reveal-project { opacity: 0; transform: translateY(42px); transition: opacity 1s var(--ease),transform 1s var(--ease); transition-delay: var(--reveal-delay,0ms); }
 .reveal-project.is-visible { opacity: 1; transform: none; }
 .motion-ready .reveal-project { opacity: 1; transform: none; }
-.motion-ready .reveal-project figure { clip-path: inset(0 0 100% 0); transition: clip-path 1.15s var(--ease); transition-delay: var(--reveal-delay,0ms); }
+.motion-ready .reveal-project figure { position:relative; clip-path: inset(0 0 100% 0); transform:perspective(1000px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)); transform-style:preserve-3d; transition: clip-path 1.15s var(--ease),transform .62s var(--ease); transition-delay: var(--reveal-delay,0ms),0ms; will-change:transform; }
+.motion-ready .reveal-project figure::after { content:""; position:absolute; z-index:1; inset:0; pointer-events:none; background:linear-gradient(108deg,transparent 38%,rgba(242,245,240,.42) 49%,transparent 60%); transform:translateX(-125%); }
 .motion-ready .reveal-project .project-card__meta { opacity:0; transform:translateY(22px); transition:opacity .75s var(--ease),transform .9s var(--ease); transition-delay:calc(var(--reveal-delay,0ms) + 280ms); }
 .motion-ready .reveal-project.is-visible figure { clip-path: inset(0); }
+.motion-ready .reveal-project.is-visible figure::after { transform:translateX(125%); transition:transform 1.2s .18s var(--ease-in-out); }
 .motion-ready .reveal-project.is-visible .project-card__meta { opacity:1; transform:none; }
 
 .studio-grid { display: grid; grid-template-columns: 1.55fr .55fr; gap: 8vw; margin-top: 78px; }
@@ -335,6 +337,20 @@ body.site-ready .hero-caption { opacity: .85; }
 .plan-axis::after { content:""; position:absolute; right:-1px; top:-3px; width:6px; height:6px; border-top:1px solid currentColor; border-right:1px solid currentColor; transform:rotate(45deg); }
 .plan-axis--sun { left:7%; top:15%; width:72%; color:#728d86; background:currentColor; transform:rotate(19deg); }
 .plan-axis--wind { left:18%; bottom:17%; width:63%; color:#81948f; background:currentColor; transform:rotate(-11deg); }
+.motion-ready .research-workbench.is-visible .plan-grid::before { transform:scaleX(0); transform-origin:left; animation:planWallH .9s .12s var(--ease) forwards; }
+.motion-ready .research-workbench.is-visible .plan-grid::after { transform:scaleY(0); transform-origin:top; animation:planWallV .9s .18s var(--ease) forwards; }
+.motion-ready .research-workbench.is-visible .plan-axis--sun { transform:rotate(19deg) scaleX(0); transform-origin:left; animation:planSun 1.05s .3s var(--ease) forwards; }
+.motion-ready .research-workbench.is-visible .plan-axis--wind { transform:rotate(-11deg) scaleX(0); transform-origin:left; animation:planWind .9s .48s var(--ease) forwards; }
+.motion-ready .research-workbench.is-visible .plan-room { animation:planRoomIn .62s var(--ease) both; }
+.motion-ready .research-workbench.is-visible .plan-room--living { animation-delay:.16s; }
+.motion-ready .research-workbench.is-visible .plan-room--court { animation-delay:.26s; }
+.motion-ready .research-workbench.is-visible .plan-room--private { animation-delay:.36s; }
+.motion-ready .research-workbench.is-visible .plan-room--water { animation-delay:.46s; }
+@keyframes planWallH { to { transform:scaleX(1); } }
+@keyframes planWallV { to { transform:scaleY(1); } }
+@keyframes planSun { to { transform:rotate(19deg) scaleX(1); } }
+@keyframes planWind { to { transform:rotate(-11deg) scaleX(1); } }
+@keyframes planRoomIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:none; } }
 .plan-board[data-mode="material"] { background:#dde2dc; }
 .plan-board[data-mode="material"] .plan-room { background:rgba(82,111,104,.08); }
 .plan-board[data-mode="material"] .plan-room--court { background:rgba(82,111,104,.24); }
@@ -389,7 +405,12 @@ body.site-ready .hero-caption { opacity: .85; }
 .contact { min-height: 92svh; display: flex; flex-direction: column; width: 100%; padding: 30px 3.2vw; background: var(--accent); color: #f2eee6; overflow: hidden; }
 .contact > p { margin: auto 0 28px 7vw; font: 500 clamp(24px,2.7vw,42px)/1 var(--serif); letter-spacing: -.04em; color: rgba(255,255,255,.72); }
 .contact-cta { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 30px; padding: 22px 0 28px; border: 0; border-top: 1px solid rgba(255,255,255,.5); border-bottom: 1px solid rgba(255,255,255,.5); background: transparent; color: inherit; text-align: left; cursor: pointer; font: 500 clamp(55px,8.4vw,128px)/.86 var(--serif); letter-spacing: -.075em; }
-.contact-arrow { display: grid; place-items: center; width: clamp(76px,8vw,116px); aspect-ratio: 1; flex: 0 0 auto; border-radius: 50%; background: #f2eee6; color: var(--accent); transition: transform .45s var(--ease), background .35s, color .35s; }
+.contact-arrow { position:relative; display: grid; place-items: center; width: clamp(76px,8vw,116px); aspect-ratio: 1; flex: 0 0 auto; border-radius: 50%; background: #f2eee6; color: var(--accent); transition: transform .45s var(--ease), background .35s, color .35s; }
+.contact-arrow::after { content:""; position:absolute; inset:-8px; border:1px solid rgba(242,238,230,.48); border-radius:inherit; opacity:0; transform:scale(.88); }
+.contact-cta.is-visible .contact-arrow { animation:contactArrowIn .72s .18s var(--ease) both; }
+.contact-cta.is-visible .contact-arrow::after { animation:contactRing 1.25s .42s var(--ease) both; }
+@keyframes contactArrowIn { from { opacity:0; transform:translateX(-22px) rotate(-25deg) scale(.9); } to { opacity:1; transform:none; } }
+@keyframes contactRing { 0% { opacity:.7; transform:scale(.88); } 100% { opacity:0; transform:scale(1.32); } }
 .contact-arrow b { width: 30px; height: 30px; }
 .contact-arrow b::before { top: 4px; right: 2px; width: 23px; }
 .contact-arrow b::after { width: 10px; height: 10px; top: 4px; right: 2px; }
@@ -488,6 +509,7 @@ body.site-ready .hero-caption { opacity: .85; }
   .hero-statement a:hover i { transform:translate(5px,5px); }
   .project-filters button:hover { color:var(--ink); }
   .project-card:hover img { --image-scale:1.075; filter:saturate(.86); }
+  .project-card:hover figure { transition-duration:.32s; }
   .project-card:hover strong i { transform:translate(4px,-4px); }
   .project-archive__row:hover { color:var(--accent); transform:translateX(10px); }
   .research-notes button:hover { opacity:.78; transform:translateX(5px); }

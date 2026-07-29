@@ -197,6 +197,24 @@ if (!reducedMotion) {
   window.addEventListener('scroll', requestParallax, { passive:true });
   window.addEventListener('resize', requestParallax);
   requestParallax();
+
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.project-card').forEach((card) => {
+      const figure = card.querySelector('figure');
+      if (!figure) return;
+      card.addEventListener('pointermove', (event) => {
+        const bounds = figure.getBoundingClientRect();
+        const x = (event.clientX - bounds.left) / bounds.width - .5;
+        const y = (event.clientY - bounds.top) / bounds.height - .5;
+        figure.style.setProperty('--tilt-x', `${(-y * 2.2).toFixed(2)}deg`);
+        figure.style.setProperty('--tilt-y', `${(x * 2.2).toFixed(2)}deg`);
+      });
+      card.addEventListener('pointerleave', () => {
+        figure.style.setProperty('--tilt-x', '0deg');
+        figure.style.setProperty('--tilt-y', '0deg');
+      });
+    });
+  }
 }
 
 const menuButton = document.querySelector('.menu-button');

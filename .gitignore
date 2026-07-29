@@ -1,0 +1,11 @@
+# Source videos retained locally but not used by the published site
+0.MOV
+111.MOV
+hero-film.mp4
+
+# Local tooling
+.DS_Store
+Thumbs.db
+.openai/
+.agents/
+.gh-auth-*.txt

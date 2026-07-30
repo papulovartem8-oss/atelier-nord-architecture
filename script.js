@@ -99,6 +99,53 @@ rotateHeroPhrases();
 
 document.querySelectorAll('.contact > p,.contact-cta,.contact-grid > div').forEach((element) => element.classList.add('reveal'));
 
+// Editorial type reveal: headings arrive as a composed sequence, not as one block.
+// It deliberately stays on the main narrative headlines so the page never feels busy.
+if (!reducedMotion) {
+  const textRevealTargets = document.querySelectorAll([
+    '.studio h2.reveal',
+    '.studio-story__content h3.reveal',
+    '.projects-title h2',
+    '.services-head h2.reveal',
+    '.process-lead h2',
+    '.approach-statement h2',
+    '.research-head h2',
+    '.team-content h2',
+    '.team-leadership__intro h3',
+    '.contact > p'
+  ].join(','));
+
+  textRevealTargets.forEach((target) => {
+    target.classList.add('text-reveal');
+    const textNodes = [];
+    const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, {
+      acceptNode: (node) => node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+    });
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    let wordIndex = 0;
+    textNodes.forEach((node) => {
+      const fragment = document.createDocumentFragment();
+      node.nodeValue.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          fragment.append(part);
+          return;
+        }
+        const word = document.createElement('span');
+        const wordInner = document.createElement('span');
+        word.className = 'text-word';
+        word.style.setProperty('--word-delay', `${Math.min(wordIndex * 42, 462)}ms`);
+        wordInner.textContent = part;
+        word.append(wordInner);
+        fragment.append(word);
+        wordIndex += 1;
+      });
+      node.replaceWith(fragment);
+    });
+  });
+}
+
 [
   '.studio-facts',
   '.service-list',

@@ -190,6 +190,9 @@ body.site-ready .hero-caption { opacity: .85; }
 .section-index--light { border-color: rgba(255,255,255,.22); }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .58s var(--ease),transform .72s var(--ease); transition-delay: var(--reveal-delay,0ms); }
 .reveal.is-visible { opacity: 1; transform: none; }
+.text-reveal .text-word { display:inline-block; overflow:hidden; padding:.08em .018em .16em 0; margin:-.08em 0 -.16em; vertical-align:top; }
+.text-reveal .text-word > span { display:block; opacity:0; transform:translate3d(0,108%,0); transition:opacity .34s var(--ease),transform .72s var(--ease); transition-delay:var(--word-delay,0ms); will-change:transform,opacity; }
+.text-reveal.is-visible .text-word > span,.reveal.is-visible .text-reveal .text-word > span { opacity:1; transform:none; }
 .section-index.reveal { position: relative; border-top-color: transparent; }
 .section-index.reveal::before { content:""; position:absolute; top:-1px; left:0; right:0; height:1px; background:currentColor; opacity:.2; transform:scaleX(0); transform-origin:left; transition:transform 1.25s var(--ease); transition-delay: var(--reveal-delay,0ms); }
 .section-index.reveal.is-visible::before { transform:scaleX(1); }
